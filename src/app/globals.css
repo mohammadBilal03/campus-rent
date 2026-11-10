@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f4f6f1;
+  --color-ink: #1b2430;
+  --color-cobalt: #1f4fd8;
+  --color-marigold: #f4b63f;
+  --color-muted: #66717f;
+  --color-line: #d8ddd2;
+  --color-danger: #b42318;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+:focus-visible { outline: 2px solid var(--color-cobalt); outline-offset: 2px; }
+
+.card { background: #fff; border: 1px solid var(--color-line); border-radius: 4px; }
+a.card:hover { border-color: var(--color-ink); }
+
+.input {
+  width: 100%; background: #fff; border: 1px solid var(--color-line);
+  border-radius: 4px; padding: 0.5rem 0.7rem; font: inherit;
+}
+.input:focus { border-color: var(--color-cobalt); }
+label.field { display: block; font-weight: 600; font-size: 0.9rem; }
+label.field > .input { margin-top: 0.25rem; font-weight: 400; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  background: var(--color-cobalt); color: #fff; border: 1px solid var(--color-cobalt);
+  border-radius: 4px; padding: 0.5rem 1rem; font-weight: 600; cursor: pointer;
+}
+.btn:hover { background: #183fb0; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-quiet { background: transparent; color: var(--color-ink); border-color: var(--color-line); }
+.btn-quiet:hover { background: #fff; border-color: var(--color-ink); }
+.btn-danger { background: transparent; color: var(--color-danger); border-color: var(--color-line); }
+.btn-danger:hover { background: #fff; border-color: var(--color-danger); }
+.btn-sm { padding: 0.25rem 0.65rem; font-size: 0.85rem; }
+
+.note-error { color: var(--color-danger); background: #fff; border: 1px solid var(--color-danger); border-radius: 4px; padding: 0.5rem 0.75rem; }
+.note-info { background: #fff; border: 1px solid var(--color-line); border-radius: 4px; padding: 0.5rem 0.75rem; }
+
+/* The one memorable element: listing prices look like hand-written tags. */
+.price-tag {
+  position: relative; display: inline-block; background: var(--color-marigold); color: var(--color-ink);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.95rem;
+  padding: 0.25rem 0.7rem 0.25rem 1.5rem;
+  clip-path: polygon(0.7rem 0, 100% 0, 100% 100%, 0.7rem 100%, 0 50%);
+}
+.price-tag::before {
+  content: ""; position: absolute; left: 0.75rem; top: 50%; width: 0.4rem; height: 0.4rem;
+  border-radius: 50%; background: var(--color-paper); transform: translateY(-50%);
+}
+
+.pill { display: inline-block; border: 1px solid var(--color-line); background: #fff; border-radius: 999px; padding: 0 0.6rem; font-size: 0.8rem; }

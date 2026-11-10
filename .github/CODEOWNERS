@@ -1,0 +1,26 @@
+# Replace the usernames with your teammates' GitHub usernames.
+# Every PR touching a module needs its owner to review.
+/src/lib/supabase/              @member-a
+/src/middleware.ts              @member-a
+/src/app/login/                 @member-a
+/src/app/auth/                  @member-a
+/src/components/Navbar.tsx      @member-a
+/supabase/migrations/0001*      @member-a
+/.github/                       @member-a
+
+/src/app/items/new/             @member-b
+/src/app/page.tsx               @member-b
+/src/app/my/listings/           @member-b
+/src/components/ItemCard.tsx    @member-b
+/supabase/migrations/0002*      @member-b
+
+/src/app/items/[id]/            @member-c
+/src/app/my/bookings/           @member-c
+/supabase/migrations/0003*      @member-c
+
+/src/app/chat/                  @member-d
+/supabase/migrations/0004*      @member-d
+
+# Shared contracts: everyone must agree.
+/src/lib/contracts.ts           @member-a @member-b @member-c @member-d
+/src/lib/types.ts               @member-a @member-b @member-c @member-d
