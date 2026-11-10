@@ -1,26 +1,30 @@
-# Replace the usernames with your teammates' GitHub usernames.
-# Every PR touching a module needs its owner to review.
-/src/lib/supabase/              @member-a
-/src/middleware.ts              @member-a
-/src/app/login/                 @member-a
-/src/app/auth/                  @member-a
-/src/components/Navbar.tsx      @member-a
-/supabase/migrations/0001*      @member-a
-/.github/                       @member-a
+# The LAST matching line wins, so order matters here.
 
-/src/app/items/new/             @member-b
-/src/app/page.tsx               @member-b
-/src/app/my/listings/           @member-b
-/src/components/ItemCard.tsx    @member-b
-/supabase/migrations/0002*      @member-b
+# Member A: identity and platform
+/src/lib/supabase/              @mohammadBilal03
+/src/middleware.ts              @mohammadBilal03
+/src/app/login/                 @mohammadBilal03
+/src/app/auth/                  @mohammadBilal03
+/src/components/Navbar.tsx      @mohammadBilal03
+/supabase/migrations/0001*      @mohammadBilal03
+/.github/                       @mohammadBilal03
 
-/src/app/items/[id]/            @member-c
-/src/app/my/bookings/           @member-c
-/supabase/migrations/0003*      @member-c
+# Member C: transactions (this items line must come BEFORE Member B's items/new line)
+/src/app/items/*/               @Zardari9
+/src/app/my/bookings/           @Zardari9
+/supabase/migrations/0003*      @Zardari9
 
-/src/app/chat/                  @member-d
-/supabase/migrations/0004*      @member-d
+# Member B: catalog
+/src/app/page.tsx               @mohdshajid
+/src/app/items/new/             @mohdshajid
+/src/app/my/listings/           @mohdshajid
+/src/components/ItemCard.tsx    @mohdshajid
+/supabase/migrations/0002*      @mohdshajid
 
-# Shared contracts: everyone must agree.
-/src/lib/contracts.ts           @member-a @member-b @member-c @member-d
-/src/lib/types.ts               @member-a @member-b @member-c @member-d
+# Member D: engagement
+/src/app/chat/                  @Zardari9
+/supabase/migrations/0004*      @Zardari9
+
+# Shared contracts: everyone must agree
+/src/lib/contracts.ts           @mohammadBilal03 @Zardari9 @mohdshajid
+/src/lib/types.ts               @mohammadBilal03 @Zardari9 @mohdshajid
