@@ -26,6 +26,9 @@ export const listingSchema = z
     deposit: z.preprocess((v) => (v === '' ? 0 : v), z.coerce.number().min(0).max(1_000_000)),
     pickup_area: z.string().trim().max(100).default(''),
     image_path: z.string().max(300).optional(),
+    upi_enabled: z.preprocess((v) => v === 'true', z.boolean()),
+upi_id: z.string().trim().max(255).default(''),
+upi_name: z.string().trim().max(100).default(''),
   })
   .superRefine((v, ctx) => {
     if (v.listing_type !== 'sell' && v.rent_price_per_day === undefined) {
@@ -34,6 +37,29 @@ export const listingSchema = z
     if (v.listing_type !== 'rent' && v.sale_price === undefined) {
       ctx.addIssue({ code: 'custom', path: ['sale_price'], message: 'Enter a sale price' })
     }
+    if (v.listing_type !== 'sell' && v.upi_enabled) {
+  if (!v.upi_id) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['upi_id'],
+      message: 'Enter your UPI ID',
+    })
+  } else if (!/^[^@\s]+@[^@\s]+$/.test(v.upi_id)) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['upi_id'],
+      message: 'Enter a valid UPI ID, e.g. name@okaxis',
+    })
+  }
+
+  if (!v.upi_name) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['upi_name'],
+      message: 'Enter the UPI account holder name',
+    })
+  }
+}
   })
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Pick a valid date')
