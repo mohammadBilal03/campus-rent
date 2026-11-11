@@ -23,7 +23,13 @@ export const listingSchema = z
     listing_type: z.enum(LISTING_TYPES),
     rent_price_per_day: optionalNumber,
     sale_price: optionalNumber,
-    deposit: z.preprocess((v) => (v === '' ? 0 : v), z.coerce.number().min(0).max(1_000_000)),
+    deposit: z.preprocess(
+  (v) =>
+    v === '' || v === null || v === undefined
+      ? 0
+      : v,
+  z.coerce.number().min(0).max(1_000_000)
+),
     pickup_area: z.string().trim().max(100).default(''),
     image_path: z.string().max(300).optional(),
     upi_enabled: z.preprocess((v) => v === 'true', z.boolean()),
