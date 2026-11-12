@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import { imageUrl, priceLabel } from '@/lib/format'
+// import { imageUrl, priceLabel } from '@/lib/format'
 import type { ItemCardRow } from '@/lib/types'
+import { formatDate, imageUrl, priceLabel } from '@/lib/format'
 
-export default function ItemCard({ item }: { item: ItemCardRow }) {
+export default function ItemCard({ item, rentedUntil }: { item: ItemCardRow; rentedUntil?: string }) {
   return (
     <Link href={`/items/${item.id}`} className="card block overflow-hidden">
       <div className="relative aspect-[4/3] bg-line">
@@ -12,6 +13,7 @@ export default function ItemCard({ item }: { item: ItemCardRow }) {
         ) : (
           <div className="grid h-full place-items-center text-sm text-muted">No photo yet</div>
         )}
+        {rentedUntil && <span className="rented-ribbon">Rented out until {formatDate(rentedUntil)}</span>}
         <span className="price-tag absolute bottom-2 left-2">{priceLabel(item)}</span>
       </div>
       <div className="p-3">

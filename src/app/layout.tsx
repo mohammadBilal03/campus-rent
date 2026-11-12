@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import BackBar from '@/components/BackBar'
 
 export const metadata: Metadata = {
   title: 'Campus Rent',
@@ -22,7 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Navbar />
-        <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+        <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+          <BackBar />
+          {children}
+          </main>
       </body>
     </html>
   )
