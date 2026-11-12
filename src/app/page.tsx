@@ -35,8 +35,8 @@ export default async function Home({
         <p className="text-muted">Rent or buy from students on your campus.</p>
       </div>
 
-      <form className="grid gap-3 sm:grid-cols-[1fr_180px_150px_auto]" method="get">
-        <input className="input" name="q" defaultValue={q} placeholder="Search books, cycles, calculators" aria-label="Search" />
+      <form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_180px_150px_auto]" method="get">
+        <input className="input sm:col-span-2 lg:col-span-1" name="q" defaultValue={q} placeholder="Search books, cycles, calculators" aria-label="Search" />
         <select className="input" name="category" defaultValue={category ?? ''} aria-label="Category">
           <option value="">All categories</option>
           {categories.map((c) => (

@@ -42,13 +42,13 @@ export default async function MyListings({ searchParams }: { searchParams: Promi
 
       <ul className="space-y-3">
         {items.map((item) => (
-          <li key={item.id} className="card flex flex-wrap items-center gap-3 p-4">
-            <div className="min-w-0 flex-1">
+          <li key={item.id} className="card row-card p-4">
+            <div className="row-main">
               <Link href={`/items/${item.id}`} className="text-lg font-semibold hover:underline">{item.title}</Link>
               <p className="text-sm text-muted">{priceLabel(item)}</p>
+              <span className="pill mt-1">{item.status}</span>
             </div>
-            <span className="pill">{item.status}</span>
-            <div className="flex flex-wrap gap-2">
+            <div className="row-actions">
               {item.status === 'active' && <StatusButton id={item.id} status="unavailable" label="Pause" />}
               {item.status === 'unavailable' && <StatusButton id={item.id} status="active" label="Make active" />}
               {item.status !== 'sold' && <StatusButton id={item.id} status="sold" label="Mark sold" />}
