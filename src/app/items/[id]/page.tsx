@@ -5,6 +5,7 @@ import { formatDate, imageUrl, inr, todayIso } from '@/lib/format'
 import type { ItemRow } from '@/lib/types'
 import { openConversation, requestBooking } from './actions'
 import SubmitButton from '@/components/SubmitButton'
+import ItemExtras from '@/components/ItemExtras'
 
 const CONDITION: Record<string, string> = { new: 'New', like_new: 'Like new', good: 'Good', fair: 'Fair' }
 
@@ -40,14 +41,7 @@ export default async function ItemPage({
 
   return (
     <div className="grid gap-8 md:grid-cols-2">
-      <div className="card overflow-hidden">
-        {item.image_path ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl(item.image_path)} alt={item.title} className="w-full object-cover" />
-        ) : (
-          <div className="grid aspect-[4/3] place-items-center text-muted">No photo yet</div>
-        )}
-      </div>
+      <ItemExtras itemId={item.id} title={item.title} coverPath={item.image_path} isOwner={isOwner} />
 
       <div className="space-y-4">
         <div>

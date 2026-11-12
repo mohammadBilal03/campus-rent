@@ -20,13 +20,21 @@ export default async function Home({
     .order('created_at', { ascending: false })
     .limit(24)
 
-  if (q?.trim()) query = query.textSearch('search_vector', q.trim(), { type: 'websearch', config: 'english' })
+  // if (q?.trim()) query = query.textSearch('search_vector', q.trim(), { type: 'websearch', config: 'english' })
+  const term = q?.replace(/[,()%*"\\]/g, ' ').trim()
+  if (term) query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%,pickup_area.ilike.%${term}%`)
   if (category) query = query.eq('category_id', Number(category))
   if (type === 'rent') query = query.in('listing_type', ['rent', 'both'])
   if (type === 'sell') query = query.in('listing_type', ['sell', 'both'])
 
   const { data, error } = await query
   const items = (data ?? []) as unknown as ItemCardRow[]
+  const { data: rentals } = items.length
+    ? await supabase.rpc('current_rentals', { p_item_ids: items.map((i) => i.id) })
+    : { data: [] }
+  const rentedUntil = new Map(
+    ((rentals ?? []) as { item_id: string; end_date: string }[]).map((r) => [r.item_id, r.end_date])
+  )
 
   return (
     <div className="space-y-6">
@@ -58,7 +66,8 @@ export default async function Home({
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <ItemCard key={item.id} item={item} />
+            // <ItemCard key={item.id} item={item} />
+            <ItemCard key={item.id} item={item} rentedUntil={rentedUntil.get(item.id)} />
           ))}
         </div>
       )}

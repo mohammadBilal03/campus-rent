@@ -1,6 +1,6 @@
-
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { firstIssue, listingSchema } from '@/lib/contracts'
@@ -93,6 +93,9 @@ export async function createListing(formData: FormData) {
       `/items/new?error=${encodeURIComponent(error?.message ?? 'Could not save')}`
     )
   }
+
+  revalidatePath('/')
+  revalidatePath('/my/listings')
 
   redirect(`/items/${data.id}`)
 }
