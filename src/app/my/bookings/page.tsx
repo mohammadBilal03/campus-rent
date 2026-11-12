@@ -10,6 +10,7 @@ import {
   submitPayment,
   confirmPayment,
 } from './actions'
+import SubmitButton from '@/components/SubmitButton'
 
 const LABEL: Record<string, string> = {
   pending: 'Waiting for owner',
@@ -52,12 +53,7 @@ function Act({
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="status" value={status} />
       <input type="hidden" name="tab" value={tab} />
-      <button
-        className={`btn btn-sm ${danger ? 'btn-danger' : ''}`}
-        type="submit"
-      >
-        {label}
-      </button>
+      <SubmitButton className={`btn btn-sm ${danger ? 'btn-danger' : ''}`} pendingText="Saving…">{label}</SubmitButton>
     </form>
   )
 }
@@ -141,245 +137,32 @@ export default async function MyBookings({
           const isRenter = tab === 'renting'
 
           return (
-            <li key={b.id} className="card flex flex-wrap items-center gap-3 p-4">
-              <div className="min-w-0 flex-1">
-                <Link
-                  href={`/items/${b.item_id}`}
-                  className="text-lg font-semibold hover:underline"
-                >
-                  {b.items?.title}
-                </Link>
-
+            <li key={b.id} className="card row-card p-4">
+              <div className="row-main">
+                <Link href={`/items/${b.item_id}`} className="text-lg font-semibold hover:underline">{b.items?.title}</Link>
                 <p className="text-sm text-muted">
-                  {formatDate(b.start_date)} to {formatDate(b.end_date)},
-                  {' '}rent {inr(b.total_price)}
-                  {b.deposit_snapshot > 0
-                    ? `, deposit ${inr(b.deposit_snapshot)}`
-                    : ''}
+                  {formatDate(b.start_date)} to {formatDate(b.end_date)}, total {inr(b.total_price)}
+                  {b.deposit_snapshot > 0 ? `, deposit ${inr(b.deposit_snapshot)}` : ''}
                 </p>
-
                 <p className="text-sm text-muted">
-                  {isRenter
-                    ? `Owner: ${b.owner?.full_name || 'student'}`
-                    : `Renter: ${b.renter?.full_name || 'student'}`}
+                  {tab === 'renting' ? `Owner: ${b.owner?.full_name || 'student'}` : `Renter: ${b.renter?.full_name || 'student'}`}
                 </p>
+                <span className="pill mt-1">{LABEL[b.status] ?? b.status}</span>
               </div>
 
-              <span className="pill">{LABEL[b.status] ?? b.status}</span>
-
-              <div className="flex flex-wrap gap-2">
+              <div className="row-actions">
                 {tab === 'rented-out' && b.status === 'pending' && (
                   <>
-                    <Act
-                      id={b.id}
-                      status="approved"
-                      label="Approve"
-                      tab={tab}
-                    />
-                    <Act
-                      id={b.id}
-                      status="rejected"
-                      label="Reject"
-                      tab={tab}
-                      danger
-                    />
+                    <Act id={b.id} status="approved" label="Approve" tab={tab} />
+                    <Act id={b.id} status="rejected" label="Reject" tab={tab} danger />
                   </>
                 )}
-
-                {tab === 'rented-out' &&
-                  b.status === 'approved' &&
-                  payment?.payment_status === 'paid' && (
-                    <Act
-                      id={b.id}
-                      status="active"
-                      label="Mark handed over"
-                      tab={tab}
-                    />
-                  )}
-
-                {tab === 'rented-out' &&
-                  b.status === 'approved' &&
-                  payment?.payment_status !== 'paid' && (
-                    <p className="note-info">
-                      Waiting for renter payment and your confirmation before handover.
-                    </p>
-                  )}
-
-                {tab === 'rented-out' && b.status === 'active' && (
-                  <Act
-                    id={b.id}
-                    status="completed"
-                    label="Mark returned"
-                    tab={tab}
-                  />
+                {tab === 'rented-out' && b.status === 'approved' && <Act id={b.id} status="active" label="Mark handed over" tab={tab} />}
+                {tab === 'rented-out' && b.status === 'active' && <Act id={b.id} status="completed" label="Mark returned" tab={tab} />}
+                {tab === 'renting' && (b.status === 'pending' || b.status === 'approved') && (
+                  <Act id={b.id} status="cancelled" label="Cancel request" tab={tab} danger />
                 )}
-
-                {tab === 'renting' &&
-                  (b.status === 'pending' || b.status === 'approved') && (
-                    <Act
-                      id={b.id}
-                      status="cancelled"
-                      label="Cancel request"
-                      tab={tab}
-                      danger
-                    />
-                  )}
               </div>
-
-              {/* Payment interface for renter */}
-              {isRenter && b.status === 'approved' && !payment && (
-                <div className="w-full space-y-3 border-t pt-4">
-                  <h3 className="font-semibold">Choose payment method</h3>
-
-                  <p className="text-sm text-muted">
-                    Your booking is approved. Select how you want to pay
-                    the rent and security deposit.
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    <form action={createPayment}>
-                      <input
-                        type="hidden"
-                        name="booking_id"
-                        value={b.id}
-                      />
-                      <input
-                        type="hidden"
-                        name="payment_method"
-                        value="upi"
-                      />
-                      <button className="btn btn-sm" type="submit">
-                        Pay using UPI
-                      </button>
-                    </form>
-
-                    <form action={createPayment}>
-                      <input
-                        type="hidden"
-                        name="booking_id"
-                        value={b.id}
-                      />
-                      <input
-                        type="hidden"
-                        name="payment_method"
-                        value="offline"
-                      />
-                      <button
-                        className="btn btn-sm btn-quiet"
-                        type="submit"
-                      >
-                        Pay offline
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              )}
-
-              {/* Existing payment details */}
-              {payment && (
-                <div className="w-full space-y-3 border-t pt-4">
-                  <h3 className="font-semibold">Payment details</h3>
-
-                  <p className="text-sm">
-                    Method: <strong>
-                      {payment.payment_method === 'upi' ? 'UPI' : 'Offline'}
-                    </strong>
-                  </p>
-
-                  <p className="text-sm">
-                    Rent: {inr(payment.rent_amount_paise / 100)}
-                    {' '}| Deposit: {inr(payment.deposit_amount_paise / 100)}
-                  </p>
-
-                  <p className="text-lg font-bold">
-                    Total: {inr(payment.total_amount_paise / 100)}
-                  </p>
-
-                  {isRenter && payment.payment_method === 'upi' && (
-                    <div className="rounded-lg border p-3 space-y-2">
-                      <p className="font-semibold">Owner's UPI details</p>
-
-                      <p className="text-sm">
-                        Name: {payment.owner_upi_name_snapshot || 'Owner'}
-                      </p>
-
-                      <p className="text-sm break-all">
-                        UPI ID: <strong>
-                          {payment.owner_upi_id_snapshot || 'Not available'}
-                        </strong>
-                      </p>
-
-                      {payment.owner_upi_id_snapshot && (
-                        <a
-                          className="btn btn-sm inline-flex"
-                          href={`upi://pay?pa=${encodeURIComponent(payment.owner_upi_id_snapshot)}&pn=${encodeURIComponent(payment.owner_upi_name_snapshot || 'Owner')}&am=${(payment.total_amount_paise / 100).toFixed(2)}&cu=INR`}
-                        >
-                          Open UPI app
-                        </a>
-                      )}
-
-                      <p className="text-xs text-muted">
-                        Pay the exact amount. The owner must manually verify
-                        receipt in their UPI app.
-                      </p>
-                    </div>
-                  )}
-
-                  <p className="text-sm">
-                    Payment status:{' '}
-                    <strong>
-                      {payment.payment_status === 'pending'
-                        ? 'Payment not submitted'
-                        : payment.payment_status === 'awaiting_confirmation'
-                          ? 'Waiting for owner confirmation'
-                          : 'Payment confirmed'}
-                    </strong>
-                  </p>
-
-                  {/* Renter submits payment */}
-                  {isRenter && payment.payment_status === 'pending' && (
-                    <form action={submitPayment}>
-                      <input
-                        type="hidden"
-                        name="payment_id"
-                        value={payment.id}
-                      />
-                      <button className="btn btn-sm" type="submit">
-                        {payment.payment_method === 'upi'
-                          ? "I've made the UPI payment"
-                          : "I've paid offline"}
-                      </button>
-                    </form>
-                  )}
-
-                  {/* Owner confirms actual receipt */}
-                  {!isRenter &&
-                    payment.payment_status === 'awaiting_confirmation' && (
-                      <form action={confirmPayment}>
-                        <input
-                          type="hidden"
-                          name="payment_id"
-                          value={payment.id}
-                        />
-                        <button className="btn btn-sm" type="submit">
-                          Confirm payment received
-                        </button>
-                      </form>
-                    )}
-
-                  {!isRenter && payment.payment_status === 'pending' && (
-                    <p className="text-sm text-muted">
-                      Waiting for the renter to submit payment.
-                    </p>
-                  )}
-
-                  {payment.payment_status === 'paid' && (
-                    <p className="note-info">
-                      Payment has been confirmed by the owner.
-                    </p>
-                  )}
-                </div>
-              )}
             </li>
           )
         })}

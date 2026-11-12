@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { formatDate, imageUrl, inr, todayIso } from '@/lib/format'
 import type { ItemRow } from '@/lib/types'
 import { openConversation, requestBooking } from './actions'
+import SubmitButton from '@/components/SubmitButton'
 
 const CONDITION: Record<string, string> = { new: 'New', like_new: 'Like new', good: 'Good', fair: 'Fair' }
 
@@ -92,15 +93,15 @@ export default async function ItemPage({
                     <input className="input" type="date" name="end_date" min={today} required />
                   </label>
                 </div>
-                <button className="btn" type="submit">Send rent request</button>
+                <SubmitButton pendingText="Sending…">Send rent request</SubmitButton>
               </form>
             )}
 
             <form action={openConversation}>
               <input type="hidden" name="item_id" value={item.id} />
-              <button className="btn btn-quiet" type="submit">
+              <SubmitButton className="btn btn-quiet" pendingText="Opening chat…">
                 {canBuy ? 'Message owner to buy or ask a question' : 'Message owner'}
-              </button>
+              </SubmitButton>
             </form>
           </>
         )}

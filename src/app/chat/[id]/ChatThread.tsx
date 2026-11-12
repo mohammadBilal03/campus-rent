@@ -55,7 +55,7 @@ export default function ChatThread({
   }
 
   return (
-    <div className="card flex h-[65vh] flex-col">
+    <div className="card flex h-[70dvh] min-h-[320px] flex-col">
       <div className="flex-1 space-y-2 overflow-y-auto p-4" aria-live="polite">
         {messages.length === 0 && <p className="text-muted">Say hello and agree on a pickup time and place.</p>}
         {messages.map((m) => {
